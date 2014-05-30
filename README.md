@@ -18,3 +18,6 @@ convert_normalize.py:
 This is my first attempt to "normalize" the data, by building separate "tables" (output files) for riders and rides, to reduce the size of the dataset. Adds rider information to each trackpoint to allow for filtering by rider.
 
 A new viz on tableau public based on this will be coming soon.
+
+
+I'm ramping up on python, and there's no doubt in my mind that it's possible to do all this with a lot fewer lines of code. Suggestions welcome!
