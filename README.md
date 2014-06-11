@@ -19,5 +19,11 @@ This is my first attempt to "normalize" the data, by building separate "tables" 
 
 A new viz on tableau public based on this will be coming soon.
 
+Input dir structure should be like so:
+
+<input_dir>\rider1\gpx files
+           \rider2\gpx files
+            etc.
+
 
 I'm ramping up on python, and there's no doubt in my mind that it's possible to do all this with a lot fewer lines of code. Suggestions welcome!
