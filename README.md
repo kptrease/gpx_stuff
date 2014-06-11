@@ -25,5 +25,7 @@ Input dir structure should be like so:
            \rider2\gpx files
             etc.
 
+The output will be data.csv, rides.csv and riders.csv. You'll need to import data.csv into tableau, then import rides.csv
+and riders.csv. Do an inner join on rider_ID and on ride_ID, then bring this into the viz.
 
 I'm ramping up on python, and there's no doubt in my mind that it's possible to do all this with a lot fewer lines of code. Suggestions welcome!
