@@ -1,11 +1,37 @@
+import codecs
 import glob
 import os
 import xml.etree.ElementTree as ET
+from optparse import OptionParser
 
-# TODO: override this with a value input from the user
-output_data_file = 'data.csv'
-output_rider_file = 'riders.csv'
-output_rides_file = 'rides.csv'
+#TODO: OptionParser is deprecated, so need to switch over to ArgParse
+parser = OptionParser()
+parser.add_option('-i', '--input', dest='data_dir', type='string', action='store',
+                  help='path to the directory your gpx files live in. Dirs for each rider, each with gpx files, should live in this dir')
+parser.add_option('-o', '--output', dest='output_dir', type='string', action='store',
+                  help='directory you\'d like your output files to be saved in.')
+parser.add_option('-d', '--delimiter', dest='delimiter', type='string', action='store', default=',',
+                  help='what delimiter would you like to use? Default is comma, but use another if your user uses commas'
+                       'in their trace names')
+
+parser.set_defaults(verbose=True)
+(options, args) = parser.parse_args()
+
+if options.data_dir:
+    data_dir = options.data_dir
+if options.output_dir:
+    output_dir = options.output_dir
+if options.delimiter:
+    delimiter = options.delimiter
+
+# set this value to obscure the endpoints (protect the privacy of the people provding the traces
+# strips out this many points from the beginning and end of each ride
+# TODO: would like to make this a user parameter, but having trouble thinking throug the semantics of a boolean param. Could just make it an int
+points_to_obscure = 50
+
+output_data_file = output_dir + '\\data.csv'
+output_rider_file = output_dir + '\\riders.csv'
+output_rides_file = output_dir + '\\rides.csv'
 rider_id = 0
 ride_id = 0
 separator = "|"
@@ -25,7 +51,7 @@ with open(output_data_file, "w+") as myfile:
 def get_immediate_subdirectories(dir):
     return [name for name in os.listdir(dir) if os.path.isdir(os.path.join(dir, name))]
 
-riders = get_immediate_subdirectories("data\gpx_traces")
+riders = get_immediate_subdirectories(data_dir)
 
 print(riders)
 
@@ -33,7 +59,7 @@ print(riders)
 for rider in riders:
 
     traces = []
-    for file in glob.glob("data\gpx_traces\\" + rider + "\*.gpx"):
+    for file in glob.glob(data_dir + "\\" + rider + "\*.gpx"):
         traces.append(file)
 
     # write a new rider and rider ID to the riders file
@@ -48,7 +74,7 @@ for rider in riders:
 
         # there is a metadata child and a trk child. Everything we do is on the trk child. Could make this more explicit.
         for data in ride:
-            line = ""
+            lines = []
 
             for trkseg in data:
                 if('name' in trkseg.tag):
@@ -71,7 +97,11 @@ for rider in riders:
                                 if 'time' in data.tag:
                                     time = data.text
 
-                            line = line + str(ride_id) + separator + str(rider_id) + separator + lat_long['lat'] + separator + lat_long['lon'] + separator + ele + separator + time + "\n"
-                            # print(".", end = '')
-            with open(output_data_file, "a") as myfile:
-                myfile.write(line)
+                            line = str(ride_id) + separator + str(rider_id) + separator + lat_long['lat'] + separator + lat_long['lon'] + separator + ele + separator + time + "\n"
+                            lines.append(line)
+
+                with codecs.open(output_data_file, "a", encoding='utf8') as myfile:
+                    for i in range(points_to_obscure, (len(lines) - points_to_obscure)):
+                        myfile.write(lines[i])
+
+
