@@ -37,15 +37,15 @@ ride_id = 0
 separator = "|"
 
 # open or create the rider file, and add header information on the first line
-with open(output_rider_file, "w+") as myfile_rider:
+with codecs.open(output_rider_file, "w+", encoding='utf8') as myfile_rider:
     myfile_rider.write('rider_id|rider\n')
 
 # open or create the rides file, and add header information on the first line
-with open(output_rides_file, "w+") as myfile_rides:
+with codecs.open(output_rides_file, "w+", encoding='utf8') as myfile_rides:
     myfile_rides.write('ride_id|ride\n')
 
 # open or create the data file, and add header information on the first line
-with open(output_data_file, "w+") as myfile:
+with codecs.open(output_data_file, "w+", encoding='utf8') as myfile:
     myfile.write('ride_ID' + separator + 'rider_ID' + separator + 'latitude ' + separator + 'longitude' + separator + 'elevation' + separator + 'time\n')
 
 def get_immediate_subdirectories(dir):
@@ -64,7 +64,7 @@ for rider in riders:
 
     # write a new rider and rider ID to the riders file
     rider_id += 1
-    with open(output_rider_file, "a") as myfile_rider:
+    with codecs.open(output_rider_file, "a", encoding='utf8') as myfile_rider:
         myfile_rider.write(str(rider_id) + separator + rider + '\n')
 
     for trace in traces:
@@ -82,8 +82,9 @@ for rider in riders:
                     ride_id += 1
 
                     # write a new ride and ride ID to the rides file
-                    with open(output_rides_file, "a") as myfile_rides:
-                        myfile_rides.write(str(ride_id) + separator + str(ride) + '\n')
+                    with codecs.open(output_rides_file, "a", encoding='utf8') as myfile_rides:
+                        ride_line = str(ride_id) + separator + ride + '\n'
+                        myfile_rides.write(ride_line)
 
                 if('trkseg' in trkseg.tag):
                     for trkpt in trkseg:
